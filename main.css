@@ -42,3 +42,64 @@ body, html {
     font-weight: bold;
     background: #2b8cbfc2;
 }
+
+.store {
+    position: absolute;
+    top: 50px;
+    left: 0;
+    background: lightblue;
+    display: flex;
+    flex-direction: column;
+    min-width: 200px;
+}
+
+.store .buy-item {
+    width: 100%;
+    display: flex;
+    position: relative;
+    padding: 5px 20px;
+    box-sizing: border-box;
+
+}
+
+.store .buy-item.disabled:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: #d0d0d0c9;
+}
+
+.store h1 {
+    margin: 20px;
+}
+
+.buy-item .buy-item-label {
+    flex-grow: 1;
+    padding: 2px 30px 2px 0;
+}
+
+.buy-item .buy-item-add {
+    cursor: pointer;
+    border: 1px solid black;
+    border-radius: 3px;
+    background: #2b8cbfc2;
+    padding: 2px 10px;
+    user-select: none;
+    margin: 1px;
+    box-shadow: 2px 2px 2px 0 #7d7d7d;
+}
+
+.buy-item .buy-item-add:active {
+    box-shadow: 1px 1px 1px 0 #7d7d7d;
+    margin: 2px 0 0 2px;
+}
+
+.buy-item .buy-item-price {
+
+    padding: 2px 0 2px 10px;
+    width: 60px;
+
+}
