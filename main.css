@@ -1,0 +1,44 @@
+body, html {
+    padding: 0;
+    margin: 0;
+    overflow: hidden;
+}
+
+#mainGameCanvas {
+    box-sizing: border-box;
+}
+
+.navbar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: #2b8cbfc2;
+    display: flex;
+}
+
+.navbar .inventory-item {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    padding: 5px;
+}
+
+.gameControls {
+    position: absolute;
+    top: 50px;
+    right: 0;
+    padding: 20px;
+    background: lightblue;
+}
+
+.gameControls .controls-button {
+    padding: 10px;
+    border: 1px solid black;
+    border-radius: 3px;
+    cursor: pointer;
+    margin: 10px;
+    text-transform: uppercase;
+    font-weight: bold;
+    background: #2b8cbfc2;
+}
