@@ -103,3 +103,160 @@ body, html {
     width: 60px;
 
 }
+
+.instructions {
+    position: absolute;
+    top: 200px;
+    right: 0;
+    background: lightblue;
+    padding: 20px;
+    display: none;
+
+}
+
+.heatometer {
+    position: absolute;
+    bottom: 0;
+    background: #c4f0ff94;
+    left: 50%;
+    transform: translate(-50%, 0);
+    text-align: center;
+    max-width: 100%;
+}
+
+.heatometer h3 {
+   margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.heatometer .meter-bar {
+    height: 35px;
+    width: 400px;
+    max-width: 100%;
+    background: rgb(19,65,255);
+    display: flex;
+    margin: 5px 20px;
+    position: relative;
+}
+
+.heatometer .meter-bar .good {
+    background: blue;
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.heatometer .meter-bar .okay {
+    background: green;
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.heatometer .meter-bar .hot {
+    background: red;
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.heatometer .meter-bar .meter-fullness {
+    height: 25px;
+    width: 25px;
+    left: 0%;
+    top: -5px;
+    clip-path: polygon(100% 0, 0 0, 50% 100%);
+    background: red;
+    position: absolute;
+    transform: translate(-50%, 0);
+    z-index: 1;
+
+}
+
+.heatometer .meter-bar .meter-cover {
+    position: absolute;
+    left: 0;
+    width: 0;
+    height: 100%;
+    background: yellow;
+}
+
+.message-div {
+    position: absolute;
+    top: 30%;
+    width: 80%;
+    height: 100px;
+    text-align: center;
+    background: #ff3558;
+    border: 3px solid #cc0000;
+    left: 10%;
+    border-radius: 3px;
+    padding: 20px;
+    box-sizing: border-box;
+    font-size: 20px;
+    display: none;
+}
+
+.message-div .close {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding:10px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.gasometer {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    height: 300px;
+    width: 50px;
+    background: white;
+    border: 1px solid red;
+    padding: 10px;
+    display: flex;
+    flex-direction:column;
+}
+
+.gasometer h3 {
+    color: red;
+}
+
+.gasometer .meter-bar {
+    border: 1px solid black;
+    height: 100%;
+    background: #c9c9c9;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    flex-grow: 1;
+    position: relative;
+}
+
+.gasometer .meter-cover {
+    height: 0%;
+    width: 100%;
+    background: #c00000d6;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+}
+
+.gasometer .num-gallons {
+    text-align: center;
+    padding-top: 5px;
+}
+
+.gasometer .meter-bar .full,
+.gasometer .meter-bar .empty {
+    align-self: center;
+    padding: 5px;
+}
+
+.gasometer .meter-bar .full {
+    flex-grow: 1;
+}

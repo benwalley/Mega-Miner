@@ -6,12 +6,16 @@
 </head>
 <body>
     <div class="navbar">
-        <div class="inventory-item gas"><span class="inventory-title">Gas</span><span class="inventory-qty">0</span></div>
-        <div class="inventory-item dirt"><span class="inventory-title">Dirt</span><span class="inventory-qty">0</span></div>
-        <div class="inventory-item stone"><span class="inventory-title">Stone</span><span class="inventory-qty">0</span></div>
         <div class="inventory-item coal"><span class="inventory-title">Coal</span><span class="inventory-qty">0</span></div>
         <div class="inventory-item iron"><span class="inventory-title">Iron</span><span class="inventory-qty">0</span></div>
+        <div class="inventory-item silver"><span class="inventory-title">Silver</span><span class="inventory-qty">0</span></div>
+        <div class="inventory-item gold"><span class="inventory-title">Gold</span><span class="inventory-qty">0</span></div>
+        <div class="inventory-item emerald"><span class="inventory-title">Emerald</span><span class="inventory-qty">0</span></div>
+        <div class="inventory-item sapphire"><span class="inventory-title">Sapphire</span><span class="inventory-qty">0</span></div>
+        <div class="inventory-item ruby"><span class="inventory-title">Ruby</span><span class="inventory-qty">0</span></div>
         <div class="inventory-item diamond"><span class="inventory-title">Diamond</span><span class="inventory-qty">0</span></div>
+        <div class="inventory-item heat-resistance"><span class="inventory-title">Heat Resistance</span><span class="inventory-qty">0</span></div>
+        <div class="inventory-item drill-bit"><span class="inventory-title">Drill Bit power</span><span class="inventory-qty">0</span></div>
         <div class="inventory-item money"><span class="inventory-title">Money</span><span class="inventory-qty">$0</span></div>
     </div>
 <!--    <div class="game-controls-show-hide">Controls</div>-->
@@ -22,18 +26,68 @@
 
     <div class="store">
         <h1>Store</h1>
-        <div class="buy-item gas disabled" data-item="gas" data-price="10" data-qty="50">
+        <div class="buy-item gas disabled" data-item="gas" data-price="20" data-qty="50">
             <div class="buy-item-label">Gas (50gal)</div>
             <div class="buy-item-add">Buy</div>
-            <div class="buy-item-price">$10</div>
+            <div class="buy-item-price">$20</div>
         </div>
-        <div class="buy-item gas disabled" data-item="gas" data-price="200" data-qty="1">
+        <div class="buy-item gas disabled" data-item="heatResistance" data-price="200" data-qty="1">
             <div class="buy-item-label">Heat resistance</div>
             <div class="buy-item-add">Buy</div>
             <div class="buy-item-price">$200</div>
         </div>
+        <div class="buy-item upgradeGasTank disabled" data-item="upgradeGasTank" data-price="200" data-qty="100">
+            <div class="buy-item-label">Upgrade Gas Tank (+50gal)</div>
+            <div class="buy-item-add">Buy</div>
+            <div class="buy-item-price">$200</div>
+        </div>
+        <div class="buy-item drill-bit disabled" data-item="drillBit" data-price="200" data-qty="1">
+            <div class="buy-item-label">Drill Bit Power</div>
+            <div class="buy-item-add">Buy</div>
+            <div class="buy-item-price">$200</div>
+        </div>
+        <div class="buy-item emergency-evacuation disabled" data-item="emergency-evacuation" data-price="1000" data-qty="1">
+            <div class="buy-item-label">Emergency Evacuation</div>
+            <div class="buy-item-add">Buy</div>
+            <div class="buy-item-price">$1000</div>
+        </div>
+    </div>
+
+    <div class="instructions">
+        <h2>How to play</h2>
+        <div>Use the W S A D keys to move</div>
+        <div>Gather materials to earn money</div>
+        <div>Return to the surface to cash in your mining materials and purchase from the store</div>
+        <div>Don't run out of gas underground, or you will loose</div>
+        <div>It gets hotter down below.</div>
     </div>
     <canvas id="mainGameCanvas" width="1000" height="1000"></canvas>
+
+    <div class="heatometer">
+        <h3>Heat-O-Meter</h3>
+        <div class="meter-bar">
+            <div class="good">Good</div>
+            <div class="okay">Okay</div>
+            <div class="hot">HOT!</div>
+            <div class="meter-fullness"></div>
+            <div class="meter-cover"></div>
+        </div>
+    </div>
+
+    <div class="gasometer">
+        <h3>GAS</h3>
+        <div class="meter-bar">
+            <div class="full">F</div>
+            <div class="empty">E</div>
+            <div class="meter-cover"></div>
+        </div>
+        <div class="num-gallons"><div class="number">0</div><div> Gal</div></div>
+    </div>
+
+    <div class="message-div">
+        <div class="content"></div>
+        <div class="close">close</div>
+    </div>
 
     <script type="text/javascript" src = "main.js"></script>
 </body>
