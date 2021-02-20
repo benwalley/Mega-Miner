@@ -1,4 +1,4 @@
-// TODO
+// TODO add multiplier (silk touch)
 
 
 // UTILITY CLASSES
@@ -56,6 +56,10 @@ function movePlayer(x, y) {
                 } else {
                     window.gameData.playerData.inventory[blockType] = 1;
                 }
+            } else {
+                if(blockType !== "dirt" && blockType !== "stone" && blockType !== "empty") {
+                    informationalMessage("You can't hold that much cargo", 1000);
+                }
             }
 
             updateDisplayedQty();
@@ -66,32 +70,20 @@ function movePlayer(x, y) {
     }
 
     cargoMeter();
+    depthometer();
     makeBlocksVisibleAround(potentialPosition.x, potentialPosition.y);
 }
 
 function makeBlocksVisibleAround(x, y) {
     // Make blocks Visible around you.
-    if(y < 0) {
-        gameData.mine[y + 1][x - 1].isVisible = true;
-        gameData.mine[y + 1][x].isVisible = true;
-        gameData.mine[y + 1][x + 1].isVisible = true;
-    } else if (y === 0) {
-        gameData.mine[y][x].isVisible = true;
-        gameData.mine[y][x - 1].isVisible = true;
-        gameData.mine[y][x + 1].isVisible = true;
-        gameData.mine[y + 1][x - 1].isVisible = true;
-        gameData.mine[y + 1][x].isVisible = true;
-        gameData.mine[y + 1][x + 1].isVisible = true;
-    } else {
-        gameData.mine[y][x].isVisible = true;
-        gameData.mine[y - 1][x - 1].isVisible = true;
-        gameData.mine[y - 1][x].isVisible = true;
-        gameData.mine[y - 1][x + 1].isVisible = true;
-        gameData.mine[y][x - 1].isVisible = true;
-        gameData.mine[y][x + 1].isVisible = true;
-        gameData.mine[y + 1][x - 1].isVisible = true;
-        gameData.mine[y + 1][x].isVisible = true;
-        gameData.mine[y + 1][x + 1].isVisible = true;
+    let distance = gameData.playerData.radarDistance;
+    for(var i = 0; i <= distance; i++) {
+        for (var q = 0; q <= distance; q++) {
+            try {gameData.mine[y - q][x - i].isVisible = true} catch(e) {}
+            try {gameData.mine[y - q][x + i].isVisible = true} catch(e) {}
+            try {gameData.mine[y + q][x - i].isVisible = true} catch(e) {}
+            try {gameData.mine[y + q][x + i].isVisible = true} catch(e) {}
+        }
     }
 }
 
@@ -128,7 +120,7 @@ function drawMine() {
     // ========================================
     // Check your position, and see if you need to add more block
     //=========================================
-    if(playerPosX + numberBeforePlayer > gameData.mineSize.width) {
+    if(playerPosX + numberBeforePlayer >= gameData.mineSize.width) {
         // add to end of mine
         for (var i = 0; i < gameData.mineSize.height; i++) {
             for (var q = 0; q < numberToAddToMine; q++) {
@@ -143,6 +135,7 @@ function drawMine() {
                 gameData.mine[i].unshift({blockType: getRandomBlock(i), isMined: false, isVisible: i === 0});
             }
         }
+        gameData.startingPosition.x += numberToAddToMine;
         gameData.mineSize.width += numberToAddToMine;
         // move current position
         gameData.playerData.x += numberToAddToMine;

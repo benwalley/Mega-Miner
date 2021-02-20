@@ -1,3 +1,4 @@
+// TODO: Add radar to see larger area
 
 
 function cargoMeter() {
@@ -104,7 +105,6 @@ function addStoreListeners() {
     let storeItems = document.querySelectorAll(".store .buy-item");
 
     for (let i = 0; i < storeItems.length; i++) {
-
         storeItems[i].querySelector(".buy-item-add").addEventListener("click", function(e) {
             let element = e.target.parentElement.dataset;
             let canBuy = true;
@@ -121,11 +121,13 @@ function addStoreListeners() {
             }
             if(element.item === "upgradeGasTank") {
                 gameData.playerData.maxGas += parseInt(element.qty);
+                gameData.playerData.gasUpgradeLevel ++;
                 gameData.playerData.money -= parseInt(element.price);
                 canBuy = false;
             }
             if(element.item === "upgradeCargoHold") {
                 gameData.playerData.maxCargo += parseInt(element.qty);
+                gameData.playerData.cargoHoldLevel ++;
                 gameData.playerData.money -= parseInt(element.price);
                 canBuy = false;
             }
@@ -136,8 +138,8 @@ function addStoreListeners() {
             }
             if(element.item === "emergencyEvacuation") {
                 canBuy = false;
-                gameData.playerData.y = -1;
-                gameData.playerData.x = 50;
+                gameData.playerData.y = gameData.startingPosition.y;
+                gameData.playerData.x = gameData.startingPosition.x;
                 gameData.playerData.money -= parseInt(element.price);
             }
             if(canBuy) {
@@ -147,7 +149,7 @@ function addStoreListeners() {
 
             updateDisplayedQty();
             cargoMeter();
-            showOrHideStoreItems();
+            showStore();
         })
     }
 }
@@ -158,7 +160,13 @@ function showOrHideStoreItems() {
     for(let i = 0; i < storeItems.length; i++) {
         if(aboveGround && storeItems[i].dataset.price <= gameData.playerData.money) {
             // if you're above ground, un-disable them
-            storeItems[i].classList.remove("disabled");
+            // if you aren't too high a level
+            let maxLevel = parseInt(storeItems[i].dataset.maxLevel);
+            if(maxLevel && maxLevel !== -1 && gameData.playerData[storeItems[i].dataset.item] >= maxLevel) {
+                storeItems[i].classList.add("disabled");
+            } else {
+                storeItems[i].classList.remove("disabled");
+            }
         } else if(storeItems[i].dataset.item === "emergencyEvacuation" && parseInt(storeItems[i].dataset.price) <= gameData.playerData.money) {
             storeItems[i].classList.remove("disabled");
         } else {
@@ -177,7 +185,16 @@ function showStore() {
     // create Store HTML
     for(let i = 0; i < gameData.storeItems.length; i++) {
         let item = gameData.storeItems[i]
-        let html = '<div class="buy-item ' + item.id + ' disabled" data-item="' + item.id + '" data-price="' + item.price + '" data-qty="' + item.qty + '">\n' +
+        let price = item.originalPrice;
+        let level = gameData.playerData[item.inventoryName];
+        let multiplier = item.upgradePriceMultiplier ?? gameData.priceMultiplier;
+        let maxLevel =  item.maxLevel ?? -1;
+        if(item.id !== "gas" && item.id !== "emergencyEvacuation") {
+            // make price higher depending on level, if it isn't gas or an evacuation
+            gameData.storeItems[i].price = Math.floor(price + ((level - 1) * (multiplier * price)));
+        }
+
+        let html = '<div class="buy-item ' + item.id + ' disabled" data-item="' + item.id + '" data-price="' + item.price + '" data-qty="' + item.qty + '" data-max-level="' + maxLevel +'">\n' +
             '            <div class="buy-item-label">' + item.name + '</div>\n' +
             '            <div class="buy-item-add">Buy</div>\n' +
             '            <div class="buy-item-price">$' + item.price + '</div>\n' +
@@ -272,8 +289,16 @@ function informationalMessage(message, time) {
     messageDiv.innerHTML = message;
     messageDiv.style.display = "block"
     time = time ?? 5000;
-    setTimeout(function() {
+    if(gameData.messageTimeout) {
+        clearTimeout(gameData.messageTimeout);
+    }
+    gameData.messageTimeout = setTimeout(function() {
         let messageDiv = document.querySelector(".informationalMessage");
         messageDiv.style.display = "none"
     }, time)
+}
+
+function depthometer() {
+    let depthDiv = document.querySelector(".depthometer .depth");
+    depthDiv.innerHTML = gameData.playerData.y + 1;
 }
