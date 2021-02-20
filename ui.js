@@ -236,11 +236,23 @@ function heatometer() {
     const heatometerCover = document.querySelector(".heatometer .meter-cover");
 
     let percentageHeat = gameData.currentHeat/gameData.maxHeat;
+    let showThreshold = 0.7;
+    if(percentageHeat > showThreshold) {
+        // show heat warning
+        let warning = document.querySelector(".heatWarning");
+        let shortSection = 1 - showThreshold
+        let difference = percentageHeat - showThreshold; // amount that the percentage is in showThreshold.
+        // get percentage of shortSection, that is difference.
+        let perc = (difference/shortSection);
+        warning.style.opacity = perc;
+    }
     percentageHeat = Math.floor(percentageHeat * 100);
     if(percentageHeat >= gameData.maxHeat) {
         // you died
-        // youDied("You burned to death")
+        informationalMessage("You burned to death!", 5000);
+        init(true);
     }
+
     heatometerArrow.style.left = percentageHeat + "%";
     heatometerCover.style.width = percentageHeat + "%";
     document.querySelector(".heatometer .heatometerLevel").innerHTML = gameData.playerData.heatResistance;

@@ -222,7 +222,6 @@ function calculatePlayerMove() {
             if(Date.now() - moveStartTime >= 200) {
                 movePlayer(window.gameData.playerMoving.direction.x, -1);
                 window.gameData.playerMoving.started = Date.now();
-                // TODO: add a loader to show how far they've mined into that block. Eventually I should actually move them little bits.
             }
 
         } else {
@@ -315,6 +314,7 @@ function init(fromButton = false) {
     updateDisplayedQty();
     handleRestartSave();
     cargoMeter();
+    document.querySelector(".heatWarning").style.opacity = 0; // reset burn warning
     window.requestAnimationFrame(initGameLoop);
 }
 init()
