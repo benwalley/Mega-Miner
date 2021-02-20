@@ -15,42 +15,65 @@ body, html {
     width: 100%;
     background: #2b8cbfc2;
     display: flex;
+    align-items: center;
+    flex-wrap: wrap;
 }
 
-.navbar .inventory-item {
+.navbar .inventory-item.money {
     display: flex;
     flex-direction: column;
     text-align: center;
     padding: 5px;
+    margin-left: 30%;
+    font-size: 20px;
+}
+
+.navbar .inventory-item {
+    margin-left: 20px;
+}
+
+.navbar .inventory-item:active {
+    margin-left: 21px;
 }
 
 .gameControls {
-    position: absolute;
-    top: 50px;
-    right: 0;
-    padding: 20px;
-    background: lightblue;
+    display: flex;
+    flex-direction: row;
+    margin-left: auto;
 }
 
 .gameControls .controls-button {
     padding: 10px;
-    border: 1px solid black;
-    border-radius: 3px;
     cursor: pointer;
-    margin: 10px;
     text-transform: uppercase;
-    font-weight: bold;
-    background: #2b8cbfc2;
+    border-left: 1px solid black;
 }
 
 .store {
     position: absolute;
-    top: 50px;
-    left: 0;
+    top: 100px;
+    left: 50%;
+    width: 600px;
+    transform: translate(-50%, 0);
     background: lightblue;
-    display: flex;
     flex-direction: column;
-    min-width: 200px;
+    display: none;
+}
+
+.store .store-message {
+    text-align: center;
+    border: 1px solid red;
+    color: red;
+    padding: 5px;
+    background: white;
+    display: none;
+}
+
+.store .close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
 }
 
 .store .buy-item {
@@ -211,8 +234,8 @@ body, html {
 
 .gasometer {
     position: absolute;
-    right: 0;
-    bottom: 0;
+    right: 10px;
+    bottom: 10px;
     height: 300px;
     width: 50px;
     background: white;
@@ -260,3 +283,129 @@ body, html {
 .gasometer .meter-bar .full {
     flex-grow: 1;
 }
+
+.cargoMenu {
+    padding: 20px;
+    min-width: 200px;
+    top: 60px;
+    right: 0;
+    position: absolute;
+    background: #add8e6c4;
+}
+
+.cargoMenu .dropdownHeader {
+    padding: 5px;
+    cursor: pointer;
+
+}
+
+.cargoMenu .dropdownHeader h3 {
+    margin: 5px 0;
+}
+
+.cargoMenu .cargo-item-container {
+
+
+    box-sizing: border-box;
+}
+
+.cargo-item {
+    display: flex;
+}
+
+.cargo-item .inventory-title {
+    flex-grow: 1;
+}
+
+.cargoMenu .cargo-item-container .icon {
+    width: 20px;
+    height: 20px;
+    background: green;
+    margin-right: 10px;
+}
+
+.sell {
+    position: absolute;
+    top: 100px;
+    left: 50%;
+    width: 600px;
+    transform: translate(-50%, 0);
+    background: lightblue;
+    border: 1px solid black;
+    border-radius: 3px;
+    padding: 20px;
+    display: none;
+}
+
+
+.sell .cargo-item-icon {
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+    background: green;
+}
+.sell .cargo-item {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.sell .numberToSell {
+    width: 50px;
+    margin: 0 10px;
+}
+
+.sell .cargo-item-name {
+    font-weight: bold;
+    margin-right: 20px;
+    font-size: 18px;
+    text-transform: uppercase;
+}
+
+.sell .cargo-item-price {
+    padding-right: 20px;
+    border-right: 1px solid black;
+    margin-right: auto;
+}
+
+.sell .sellAll {
+    margin-left:40px;
+}
+
+.sell .sellAll:active {
+    margin-left:41px;
+}
+
+.sell .close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+}
+
+.customButton {
+    border: 1px solid black;
+    background: #2b8cbfc2;
+    padding: 2px 10px;
+    border-radius: 3px;
+    margin: 1px;
+    box-shadow: 2px 2px 2px 0 #7d7d7d;
+    cursor: pointer;
+    height: 18px;
+}
+
+.customButton:active {
+    box-shadow: 1px 1px 1px 0 #7d7d7d;
+    margin: 2px 0 0 2px;
+}
+
+.informationalMessage {
+    width: 100%;
+    background: white;
+    border: 2px solid red;
+    color: red;
+    padding: 2px;
+    font-size: 16px;
+    text-align: center;
+    display: none;
+}
+

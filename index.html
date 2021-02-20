@@ -5,27 +5,35 @@
     <link rel="stylesheet" href="main.css">
 </head>
 <body>
+
     <div class="navbar">
-        <div class="inventory-item coal"><span class="inventory-title">Coal</span><span class="inventory-qty">0</span></div>
-        <div class="inventory-item iron"><span class="inventory-title">Iron</span><span class="inventory-qty">0</span></div>
-        <div class="inventory-item silver"><span class="inventory-title">Silver</span><span class="inventory-qty">0</span></div>
-        <div class="inventory-item gold"><span class="inventory-title">Gold</span><span class="inventory-qty">0</span></div>
-        <div class="inventory-item emerald"><span class="inventory-title">Emerald</span><span class="inventory-qty">0</span></div>
-        <div class="inventory-item sapphire"><span class="inventory-title">Sapphire</span><span class="inventory-qty">0</span></div>
-        <div class="inventory-item ruby"><span class="inventory-title">Ruby</span><span class="inventory-qty">0</span></div>
-        <div class="inventory-item diamond"><span class="inventory-title">Diamond</span><span class="inventory-qty">0</span></div>
-        <div class="inventory-item heat-resistance"><span class="inventory-title">Heat Resistance</span><span class="inventory-qty">0</span></div>
-        <div class="inventory-item drill-bit"><span class="inventory-title">Drill Bit power</span><span class="inventory-qty">0</span></div>
-        <div class="inventory-item money"><span class="inventory-title">Money</span><span class="inventory-qty">$0</span></div>
+        <div class="informationalMessage"></div>
+        <div class="inventory-item buyItems customButton">Store</div>
+        <div class="inventory-item sellItems customButton">Sell Your Cargo</div>
+        <div class="inventory-item money"></div>
+
+
+        <div class="gameControls">
+            <div class="controls-button restart">Restart</div>
+            <div class="controls-button save">Save</div>
+        </div>
     </div>
 <!--    <div class="game-controls-show-hide">Controls</div>-->
-    <div class="gameControls">
-        <div class="controls-button restart">Restart</div>
-        <div class="controls-button save">Save</div>
+
+    <div class="cargoMenu">
+        <div class="dropdownHeader">
+            <div class="qty"></div>
+            <h3>Cargo </h3>
+            <h4><span class="current-number">0</span> (out of <span class="max-can-carry">20</span>)</h4>
+        </div>
+        <div class="cargo-item-container">
+        </div>
     </div>
 
     <div class="store">
+        <div class="close">close</div>
         <h1>Store</h1>
+        <div class="store-message">This is a test</div>
         <div class="buy-item gas disabled" data-item="gas" data-price="20" data-qty="50">
             <div class="buy-item-label">Gas (50gal)</div>
             <div class="buy-item-add">Buy</div>
@@ -37,7 +45,7 @@
             <div class="buy-item-price">$200</div>
         </div>
         <div class="buy-item upgradeGasTank disabled" data-item="upgradeGasTank" data-price="200" data-qty="100">
-            <div class="buy-item-label">Upgrade Gas Tank (+50gal)</div>
+            <div class="buy-item-label">Upgrade Gas Tank (+100gal)</div>
             <div class="buy-item-add">Buy</div>
             <div class="buy-item-price">$200</div>
         </div>
@@ -46,11 +54,31 @@
             <div class="buy-item-add">Buy</div>
             <div class="buy-item-price">$200</div>
         </div>
+        <div class="buy-item cargoHold disabled" data-item="upgradeCargoHold" data-price="200" data-qty="25">
+            <div class="buy-item-label">Upgrade Cargo Hold</div>
+            <div class="buy-item-add">Buy</div>
+            <div class="buy-item-price">$200</div>
+        </div>
         <div class="buy-item emergency-evacuation disabled" data-item="emergency-evacuation" data-price="1000" data-qty="1">
             <div class="buy-item-label">Emergency Evacuation</div>
             <div class="buy-item-add">Buy</div>
             <div class="buy-item-price">$1000</div>
         </div>
+    </div>
+
+    <div class="sell">
+        <h2>Sell Your Cargo</h2>
+        <div class="sell-item-container">
+            <div class="cargo-item">
+                <div class="cargo-item-icon"></div>
+                <div class="cargo-item-name">Gold</div>
+                <div class="cargo-item-price">$20 each</div>
+                <div>QTY</div><input max = "5" class="numberToSell" type="number">
+                <div class="sell-item customButton">Sell ($20)</div>
+                <div class="sellAll customButton">Sell All ($200)</div>
+            </div>
+        </div>
+        <div class="close">close</div>
     </div>
 
     <div class="instructions">
@@ -64,7 +92,7 @@
     <canvas id="mainGameCanvas" width="1000" height="1000"></canvas>
 
     <div class="heatometer">
-        <h3>Heat-O-Meter</h3>
+        <h3>Heat-O-Meter (level <span class="heatometerLevel">1</span>)</h3>
         <div class="meter-bar">
             <div class="good">Good</div>
             <div class="okay">Okay</div>
@@ -89,6 +117,9 @@
         <div class="close">close</div>
     </div>
 
+    <script type="text/javascript" src = "data.js"></script>
+    <script type="text/javascript" src = "utilities.js"></script>
+    <script type="text/javascript" src = "ui.js"></script>
     <script type="text/javascript" src = "main.js"></script>
 </body>
 </html>

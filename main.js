@@ -1,99 +1,19 @@
 // TODO
-// make max you can cary
-// make max speed you can go, so it doesn't get too hard to control yourself
+
 
 // UTILITY CLASSES
-function getGradient(type) {
-    const gradientArray = gameData.gradients[type];
-    let gradient = gameData.ctx.createLinearGradient(0, 0, gameData.mineData.blockWidth, 0);
-    for(var i = 0; i < gradientArray.length; i++) {
-        gradient.addColorStop(gradientArray[i][0], gradientArray[i][1]);
-    }
-    return gradient;
-}
 
-function getRandomBlock(y) {
-    let blockTypeArray = [];
-    let averageFrom = 0;
-    // get array of block types
-    for(const block in window.gameData.blockTypeMap) {
-        if(gameData.blockTypeMap[block].first <= y) {
-            blockTypeArray.push(block);
-            averageFrom += gameData.blockTypeMap[block].probability;
-        }
-    }
-
-    let randValue = Math.floor(Math.random() * averageFrom);
-    let counter = 0;
-    let blockType = 'stone';
-    for(let j = 0; j < blockTypeArray.length; j++) {
-        counter += gameData.blockTypeMap[blockTypeArray[j]].probability;
-        if (randValue < counter) {
-            return blockTypeArray[j];
-        }
-    }
-
-    return blockType;
-}
-
-function checkKeyDown(e) {
-    e = e || window.event;
-    if(!window.gameData.playerMoving.started) {
-        window.gameData.playerMoving.started = Date.now();
-    }
-
-
-    if (e.code === 'ArrowUp') {
-        // up arrow
-        window.gameData.playerMoving.direction = {x:0, y:-1}
-    }
-    else if (e.code === 'ArrowDown') {
-        // down arrow
-        window.gameData.playerMoving.direction = {x:0, y:1}
-    }
-    else if (e.code === 'ArrowLeft') {
-        // left arrow
-        window.gameData.playerMoving.direction = {x:-1, y:0}
-    }
-    else if (e.code === 'ArrowRight') {
-        // right arrow
-        window.gameData.playerMoving.direction = {x:1, y:0}
-    }
-}
-
-function checkKeyUp(e) {
-    window.gameData.playerMoving.started = undefined;
-}
-
-function resizeCanvas(canvas) {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-}
-
-function drawSquare(data) {
-    if(data.isGradient) {
-        gameData.ctx.fillStyle = getGradient('gold');
-    }else if(data.color) {
-        gameData.ctx.fillStyle = data.color;
-    }
-
-    window.gameData.ctx.fillRect(data.x, data.y, data.width, data.height);
-}
-
-function drawCircle(data) {
-    window.gameData.ctx.beginPath();
-    window.gameData.ctx.arc(data.x, data.y, data.r, 0, Math.PI * 2, true); // Outer circle
-    if(data.color) {
-        window.gameData.ctx.fillStyle = data.color;
-    }
-    window.gameData.ctx.fill();
-}
 
 function drawPlayer() {
     let playerData = window.gameData.playerData;
     const blockWidth = window.gameData.mineData.blockWidth
 
-    drawCircle({x:playerData.playerDrawX, y:playerData.playerDrawY, r: (blockWidth/2), color: playerData.color})
+    drawCircle({x:playerData.playerDrawX, y:playerData.playerDrawY, r: (blockWidth/2), color: gameData.drillBitLevels[gameData.playerData.speed % gameData.drillBitLevels.length]})
+
+    // draw version number
+    gameData.ctx.font = '20px serif';
+    gameData.ctx.fillStyle = "#333333";
+    gameData.ctx.fillText('V' + gameData.playerData.speed, gameData.playerData.playerDrawX - 13, gameData.playerData.playerDrawY + 7);
 
     let moveStartTime = window.gameData.playerMoving.started;
 
@@ -107,94 +27,10 @@ function drawPlayer() {
         let angle = (Math.PI * 2 / totalTime) * elapsedTime;
         gameData.ctx.beginPath();
         gameData.ctx.arc(gameData.playerData.playerDrawX, gameData.playerData.playerDrawY, 20, 0, angle);
-        gameData.ctx.strokeStyle = "#52b325";
+        gameData.ctx.strokeStyle = "#ffffff";
         gameData.ctx.stroke();
     }
 }
-
-
-function addStoreListeners() {
-    // clone it to get rid of listeners
-    let store = document.querySelector(".store");
-    let clone = store.cloneNode(true);
-    store.parentNode.replaceChild(clone, store);
-    // redefine it after clone
-    let storeItems = document.querySelectorAll(".store .buy-item");
-
-    for (let i = 0; i < storeItems.length; i++) {
-
-        storeItems[i].querySelector(".buy-item-add").addEventListener("click", function(e) {
-            let element = e.target.parentElement.dataset;
-            let canBuy = true;
-            if(element.item === "drillBit") {
-                gameData.playerData.speed ? gameData.playerData.speed += parseInt(element.qty) : gameData.playerData.speed = parseInt(element.qty)
-            }
-            if(element.item === "gas") {
-                if(gameData.playerData.inventory.gas + parseInt(element.qty) > gameData.playerData.maxGas) {
-                    canBuy = false;
-                    alert("you can't buy that much gas. Upgrade your gas tank to carry more gas")
-                }
-            }
-            if(element.item === "upgradeGasTank") {
-                gameData.playerData.maxGas += parseInt(element.qty);
-                gameData.playerData.inventory.money -= parseInt(element.price);
-                canBuy = false;
-            }
-            if(element.item === "emergency-evacuation") {
-                canBuy = false;
-                gameData.playerData.y = -1;
-                gameData.playerData.x = 50;
-                gameData.playerData.inventory.money -= parseInt(element.price);
-            }
-            if(canBuy) {
-                gameData.playerData.inventory[element.item] ? gameData.playerData.inventory[element.item] += parseInt(element.qty) : gameData.playerData.inventory[element.item] = parseInt(element.qty)
-                gameData.playerData.inventory.money -= parseInt(element.price);
-            }
-
-            updateDisplayedQty();
-            controlStoreVisibility();
-        })
-    }
-}
-
-function controlStoreVisibility() {
-    const isPlayerAboveGround = gameData.playerData.y === -1;
-    const playersMoney = gameData.playerData.inventory.money;
-    let storeItems = document.querySelectorAll(".store .buy-item");
-
-    if (isPlayerAboveGround) {
-        // check whether they have enough money to buy stuff;
-        for (let i = 0; i < storeItems.length; i++) {
-            let item = storeItems[i].dataset.item;
-            let price = storeItems[i].dataset.price;
-            if (playersMoney < price) {
-                storeItems[i].classList.add("disabled");
-            } else if (playersMoney >= price) {
-                storeItems[i].classList.remove("disabled");
-            }
-        }
-    } else {
-        for (let i = 0; i < storeItems.length; i++) {
-            // emergency evacuation is available anytime.
-            let price = storeItems[i].dataset.price;
-            if(storeItems[i].dataset.item !== "emergency-evacuation" || playersMoney < price) {
-                storeItems[i].classList.add("disabled")
-            }
-        }
-    }
-}
-
-function updateDisplayedQty() {
-    const typeArray = ['coal', 'iron', 'silver', 'gold', 'emerald', 'sapphire', 'ruby', 'diamond', 'money'];
-
-    for(var i = 0; i < typeArray.length; i++) {
-        const display = document.querySelector(".navbar ." + typeArray[i]  + " .inventory-qty");
-        display.innerHTML = gameData.playerData.inventory[typeArray[i]] ?? 0;
-    }
-    const drillBitPower = document.querySelector(".navbar .drill-bit .inventory-qty");
-    drillBitPower.innerHTML = gameData.playerData.speed ?? 0;
-}
-
 
 function movePlayer(x, y) {
     let player = window.gameData.playerData;
@@ -204,36 +40,32 @@ function movePlayer(x, y) {
         potentialPosition.y = -1; // prevent them from moving up above -1
         window.gameData.playerData.x = potentialPosition.x;
         window.gameData.playerData.y = potentialPosition.y;
-        // if they have items, cash them in
-        let inventory = gameData.playerData.inventory;
-        for(const item in inventory) {
-            // check if it exists in the mapping table
-            if(gameData.blockTypeMap[item] !== undefined) {
-                // cash it in;
-                gameData.playerData.inventory.money += gameData.blockTypeMap[item].value * inventory[item];
-                gameData.playerData.inventory[item] = 0;
-                updateDisplayedQty();
-                controlStoreVisibility();
-            }
-        }
     } else {
         const blockType = window.gameData.mine[potentialPosition.y][potentialPosition.x].blockType;
-        const gasAfterMove = gameData.playerData.inventory.gas - gameData.blockTypeMap[blockType].gasUsed;
+        const gasAfterMove = gameData.playerData.gas - gameData.blockTypeMap[blockType].gasUsed;
+
         if(gasAfterMove >= 0 || gameData.playerData.y < 0) {
             window.gameData.playerData.x = potentialPosition.x;
             window.gameData.playerData.y = potentialPosition.y;
             window.gameData.mine[potentialPosition.y][potentialPosition.x].blockType = 'empty';
-            if (window.gameData.playerData.inventory[blockType] !== undefined) {
-                window.gameData.playerData.inventory[blockType]++;
-            } else {
-                window.gameData.playerData.inventory[blockType] = 1;
+            // only add item if your inventory can hold it
+            if(gameData.playerData.currentCargo < gameData.playerData.maxCargo) {
+                // if you have that item in your inventory
+                if (window.gameData.playerData.inventory[blockType] !== undefined) {
+                    window.gameData.playerData.inventory[blockType]++;
+                } else {
+                    window.gameData.playerData.inventory[blockType] = 1;
+                }
             }
+
             updateDisplayedQty();
-            gameData.playerData.inventory.gas = gasAfterMove;
+            gameData.playerData.gas = gasAfterMove;
+        } else if(gasAfterMove <= 0 && blockType !== "bedrock") {
+            informationalMessage("you don't have enough gas to mine that block")
         }
-        controlStoreVisibility();
     }
 
+    cargoMeter();
     makeBlocksVisibleAround(potentialPosition.x, potentialPosition.y);
 }
 
@@ -369,34 +201,6 @@ function drawMine() {
     }
 }
 
-function gasometer() {
-    let gasometer = document.querySelector(".gasometer");
-    const numberGallons = gasometer.querySelector(".num-gallons .number");
-    let percent  = Math.floor((gameData.playerData.inventory.gas/gameData.playerData.maxGas) * 100);
-    gasometer.querySelector(".meter-cover").style.height = percent + "%";
-    numberGallons.innerHTML = gameData.playerData.inventory.gas;
-}
-
-// deal with depth heat
-function heatometer() {
-    // calculate current heat
-    let playerDepth = gameData.playerData.y > 0 ? gameData.playerData.y : 0;
-
-    gameData.currentHeat = (playerDepth * gameData.heatMultiplier) / gameData.playerData.inventory.heatResistance;
-
-    const heatometerArrow = document.querySelector(".heatometer .meter-fullness");
-    const heatometerCover = document.querySelector(".heatometer .meter-cover");
-
-    let percentageHeat = gameData.currentHeat/gameData.maxHeat;
-    percentageHeat = Math.floor(percentageHeat * 100);
-    if(percentageHeat >= gameData.maxHeat) {
-        // you died
-        // youDied("You burned to death")
-    }
-    heatometerArrow.style.left = percentageHeat + "%";
-    heatometerCover.style.width = percentageHeat + "%";
-}
-
 function youDied(reason) {
     showMessage(reason);
 
@@ -404,16 +208,6 @@ function youDied(reason) {
         init(true);
     }, 1000)
 }
-
-function showMessage(message, className) {
-    const messageDiv = document.querySelector(".message-div");
-    messageDiv.querySelector(".content").innerHTML = message;
-    if(className) {
-        messageDiv.classList.add(className);
-    }
-    messageDiv.style.display = "block";
-}
-
 
 function calculatePlayerMove() {
     let moveStartTime = window.gameData.playerMoving.started;
@@ -435,56 +229,21 @@ function calculatePlayerMove() {
             // they're moving underground
             let nextBlock = gameData.blockTypeMap[gameData.mine[nextBlockY][nextBlockX].blockType];
 
-            if(gameData.playerData.inventory.gas >= nextBlock.gasUsed) {
+            if(gameData.playerData.gas >= nextBlock.gasUsed) {
+                let timeToGetThroughBlock =  nextBlock.hardness / gameData.playerData.speed;
+                if(timeToGetThroughBlock < gameData.fastestYouCanMove) {
+                    timeToGetThroughBlock = gameData.fastestYouCanMove;
+                }
                 // check if they've been moving long enough
-                if(Date.now() - moveStartTime >= nextBlock.hardness / gameData.playerData.speed) {
+                if(Date.now() - moveStartTime >= timeToGetThroughBlock) {
                     movePlayer(window.gameData.playerMoving.direction.x, window.gameData.playerMoving.direction.y);
                     window.gameData.playerMoving.started = Date.now();
                 }
             } else {
-                const evacuationPrice = document.querySelector(".emergency-evacuation").dataset.price;
-                if(gameData.playerData.inventory.money >= evacuationPrice) {
-                    // showMessage("You ran out of gas. Your only hope of survival, is to call for an emergency evacuation.");
-                }
-                // show message
-                // showMessage("You don't have enough gas to move there. Move somewhere else, or die trying");
+                informationalMessage("You don't have enough gas to move there. Emergency Evacuations can save you from a sticky spot, and can be purchased, even when you're deep underground");
             }
         }
     }
-}
-
-
-function initGlobalVariables() {
-    window.gameData = {
-        canvas: document.getElementById("mainGameCanvas"),
-        ctx: document.getElementById("mainGameCanvas").getContext('2d'),
-        mine: [],
-        mineSize: {width: 100, height: 100},
-        blockTypeMap: {
-            empty: {probability: 0, color: '#eeeeee', hardness: 100, value: 0, first: 0, gasUsed: 1},
-            dirt: {probability: 10, color: '#543400', hardness: 500, value: 0, first: 0, gasUsed: 2},
-            stone: {probability: 50, color: '#555555', hardness: 1000, value: 0, first: 1, gasUsed: 5},
-            coal: {probability: 20, color: '#222222', hardness: 1500, value: 15, first: 5, gasUsed: 7},
-            iron: {probability: 10, color: '#8f9399', hardness: 2500, value: 25, first: 30, gasUsed: 15},
-            silver: {probability: 10, color: '#e2e2e2', hardness: 3000, value: 40, first: 50, gasUsed: 20},
-            gold: {probability: 5, color: '#ed8f1c', hardness: 3500, value: 60, first: 80, gasUsed: 25},
-            sapphire: {probability: 10, color: '#1875ff', hardness: 4000, value: 100, first: 120, gasUsed: 30},
-            emerald: {probability: 10, color: '#1d8600', hardness: 45000, value: 200, first: 200, gasUsed: 35},
-            ruby: {probability: 5, color: '#a90e0e', hardness: 5000, value: 300, first: 300, gasUsed: 45},
-            diamond: {probability: 1, color: '#6ddef3', hardness: 6000, value: 500, first: 400, gasUsed: 50},
-            bedrock: {probability: 2, color: '#000000', hardness: 999999999, value: 0, first: 10, gasUsed: 10000}
-        },
-        playerData: {inventory: {gas: 0, money: 250, heatResistance: 1}, maxGas: 500, x: 50, y:-1, speed: 1, color: "#2988a0", playerDrawX: Math.floor(document.getElementById("mainGameCanvas").width/2), playerDrawY: Math.floor(document.getElementById("mainGameCanvas").height/2)},
-        playerMoving: {started: 0, direction: undefined, currentMove: undefined},
-        mineData: {blockWidth: 100},
-        groundHeight: 300,
-        viewportCenter: {x: 50, y: 2},
-        heatMultiplier: .8,
-        gradients: {gold:[[0, '#BF953F'], [.25, '#FCF6BA'], [.5, '#B38728'], [.75, '#FBF5B7'], [1, '#AA771C']]},
-        maxHeat: 100,
-        currentHeat: 5
-    };
-    // TODO: save game data to the local storage;
 }
 
 function initMine() {
@@ -507,6 +266,22 @@ function initListeners() {
     })
     document.onkeydown = checkKeyDown;
     document.onkeyup = checkKeyUp;
+
+    document.querySelector(".inventory-item.sellItems").addEventListener("click", function() {
+        closeAllPopups();
+        if(gameData.playerData.y < 0) {
+            sellStore();
+        }
+    })
+
+    document.querySelector(".inventory-item.buyItems").addEventListener("click", function() {
+        showStore();
+    })
+
+    document.querySelector(".store .close").addEventListener("click", function() {
+        document.querySelector(".store").style.display = "none";
+    })
+
 }
 
 function initGameLoop(timestamp) {
@@ -536,9 +311,9 @@ function init(fromButton = false) {
 
 
     updateDisplayedQty();
-    controlStoreVisibility();
     addStoreListeners();
     handleRestartSave();
+    cargoMeter();
     window.requestAnimationFrame(initGameLoop);
 }
 init()
