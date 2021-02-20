@@ -13,7 +13,7 @@ function initGlobalVariables() {
             silver: {probability: 10, color: '#e2e2e2', hardness: 3000, value: 40, first: 50, gasUsed: 20},
             gold: {probability: 5, color: '#ed8f1c', hardness: 3500, value: 60, first: 80, gasUsed: 25},
             sapphire: {probability: 10, color: '#1875ff', hardness: 4000, value: 100, first: 120, gasUsed: 30},
-            emerald: {probability: 10, color: '#1d8600', hardness: 45000, value: 200, first: 200, gasUsed: 35},
+            emerald: {probability: 10, color: '#1d8600', hardness: 4500, value: 200, first: 200, gasUsed: 35},
             ruby: {probability: 5, color: '#a90e0e', hardness: 5000, value: 300, first: 300, gasUsed: 45},
             diamond: {probability: 1, color: '#6ddef3', hardness: 6000, value: 500, first: 400, gasUsed: 50},
             bedrock: {probability: 2, color: '#000000', hardness: 999999999, value: 0, first: 10, gasUsed: 10000}
@@ -29,6 +29,14 @@ function initGlobalVariables() {
         currentHeat: 5,
         fastestYouCanMove: 50,
         mapCargoName: {heatResistance: "Heat Resistance"},
-        drillBitLevels: ["#730000", "#51dee3", "#8671ff", "#ff52aa", "#ff3f3f", "#F87710"]
+        drillBitLevels: ["#730000", "#51dee3", "#8671ff", "#ff52aa", "#ff3f3f", "#F87710"],
+        storeItems: [
+            {name: "Gas (50gal)", id: "gas", price: 20, qty: 50},
+            {name: "Heat Resistance", id: "heatResistance", price: 200, qty: 1},
+            {name: "Upgrade Gas Tank", id: "upgradeGasTank", price: 200, qty: 200},
+            {name: "Drill Bit Power", id: "drillBit", price: 200, qty: 1},
+            {name: "Upgrade Cargo Hold (+25)", id: "upgradeCargoHold", price: 200, qty: 25},
+            {name: "Emergency Evacuation", id: "emergencyEvacuation", price: 1000, qty: 1},
+        ]
     };
 }

@@ -1,7 +1,3 @@
-// TODO: handle store when restarted
-// TODO: change icon colors to match mat colors
-// TODO: upgrading drill bit, changes your color
-// TODO: make sell buttons work.
 
 
 function cargoMeter() {
@@ -19,17 +15,17 @@ function cargoMeter() {
     currentCargo.innerHTML = gameData.playerData.currentCargo;
 }
 
-function sellStore() {
+function renderSellStoreItems() {
     let fullString = "";
     for(let item in gameData.playerData.inventory) {
-        if(item !== "empty" && item !== "dirt" && item !== "stone") {
+        if(item !== "empty" && item !== "dirt" && item !== "stone" && gameData.playerData.inventory[item] > 0) {
             let qtyInInventory = gameData.playerData.inventory[item];
             let itemData = gameData.blockTypeMap[item];
-            let html = '<div class="cargo-item">\n' +
-                '                <div class="cargo-item-icon" style="background: "' + itemData.color +'"></div>\n' +
+            let html = '<div class="cargo-item" data-id = "' + item + '">\n' +
+                '                <div class="cargo-item-icon" style="background:' + itemData.color +';"></div>\n' +
                 '                <div class="cargo-item-name">' + item + '</div>\n' +
                 '                <div class="cargo-item-price">$' + itemData.value + ' each</div>\n' +
-                '                <div>QTY</div><input max = "' + qtyInInventory + '" class="numberToSell" type="number">\n' +
+                '                <div>QTY</div><input max = "' + qtyInInventory + '" min="0" class="numberToSell" type="number" value="0">\n' +
                 '                <div class="sell-item customButton">Sell ($0)</div>\n' +
                 '                <div class="sellAll customButton">Sell All ($' + qtyInInventory * itemData.value + ')</div>\n' +
                 '            </div>'
@@ -44,6 +40,58 @@ function sellStore() {
     document.querySelector(".sell .close").addEventListener("click", function() {
         document.querySelector(".sell").style.display = "none";
     })
+}
+
+function sellStore() {
+    renderSellStoreItems();
+    addSellStoreListeners();
+
+}
+
+function addSellStoreListeners() {
+    let items = document.querySelectorAll(".sell .cargo-item .sell-item");
+    for(let i = 0; i < items.length; i++) {
+        // add listener for buy item
+        items[i].addEventListener("click", function(e) {
+            let type = e.target.parentElement.dataset.id;
+            let qty = parseInt(e.target.parentElement.querySelector(".numberToSell").value);
+            if(isNaN(qty)) {
+                qty = 0;
+            }
+            let value = qty * gameData.blockTypeMap[type].value;
+            gameData.playerData.money += value;
+            gameData.playerData.inventory[type] -= qty;
+            updateDisplayedQty();
+            cargoMeter();
+            sellStore();
+        })
+    }
+    // add listener for change qty
+    let qtyBoxes = document.querySelectorAll(".sell .cargo-item .numberToSell");
+    for(let i = 0; i < qtyBoxes.length; i++) {
+
+        qtyBoxes[i].addEventListener("change", function(e) {
+            if(e.target.value > parseInt(e.target.max)) {
+                e.target.value = parseInt(e.target.max);
+            }
+            let type = e.target.parentElement.dataset.id;
+            e.target.parentElement.querySelector(".sell-item").innerHTML = "Sell ($" + parseInt(e.target.value) * gameData.blockTypeMap[type].value + ")";
+        })
+    }
+    // add listener for buy all
+    let itemTypes = document.querySelectorAll(".sell .cargo-item .sellAll");
+    for(let i = 0; i < itemTypes.length; i++) {
+        itemTypes[i].addEventListener("click", function(e) {
+            let type = e.target.parentElement.dataset.id;
+            let qty = gameData.playerData.inventory[type];
+            let value = qty * gameData.blockTypeMap[type].value;
+            gameData.playerData.money += value;
+            gameData.playerData.inventory[type] -= qty;
+            updateDisplayedQty();
+            cargoMeter();
+            sellStore();
+        })
+    }
 }
 
 function closeAllPopups() {
@@ -86,13 +134,7 @@ function addStoreListeners() {
                 gameData.playerData.money -= parseInt(element.price);
                 canBuy = false;
             }
-
-            if(element.item === "heatResistance") {
-                gameData.playerData.heatResistance += parseInt(element.qty);
-                gameData.playerData.money -= parseInt(element.price);
-                canBuy = false;
-            }
-            if(element.item === "emergency-evacuation") {
+            if(element.item === "emergencyEvacuation") {
                 canBuy = false;
                 gameData.playerData.y = -1;
                 gameData.playerData.x = 50;
@@ -117,9 +159,11 @@ function showOrHideStoreItems() {
         if(aboveGround && storeItems[i].dataset.price <= gameData.playerData.money) {
             // if you're above ground, un-disable them
             storeItems[i].classList.remove("disabled");
+        } else if(storeItems[i].dataset.item === "emergencyEvacuation" && parseInt(storeItems[i].dataset.price) <= gameData.playerData.money) {
+            storeItems[i].classList.remove("disabled");
         } else {
             // if you're underground, disable them unless you're emergency evacuation.
-            if(storeItems[i].dataset.item !== "emergency-evacuation" || storeItems[i].dataset.price > gameData.playerData.money) {
+            if(storeItems[i].dataset.item !== "emergencyEvacuation" || parseInt(storeItems[i].dataset.price) > gameData.playerData.money) {
                 storeItems[i].classList.add("disabled");
             }
         }
@@ -128,6 +172,21 @@ function showOrHideStoreItems() {
 
 function showStore() {
     closeAllPopups();
+
+    let htmlString = "";
+    // create Store HTML
+    for(let i = 0; i < gameData.storeItems.length; i++) {
+        let item = gameData.storeItems[i]
+        let html = '<div class="buy-item ' + item.id + ' disabled" data-item="' + item.id + '" data-price="' + item.price + '" data-qty="' + item.qty + '">\n' +
+            '            <div class="buy-item-label">' + item.name + '</div>\n' +
+            '            <div class="buy-item-add">Buy</div>\n' +
+            '            <div class="buy-item-price">$' + item.price + '</div>\n' +
+            '        </div>'
+
+        htmlString += html;
+    }
+    document.querySelector(".store .store-item-container").innerHTML = htmlString;
+
     document.querySelector(".store").style.display = "block";
     document.querySelector(".store .store-message").style.display = "none";
     if(gameData.playerData.y >= 0) {
@@ -137,6 +196,7 @@ function showStore() {
     }
 
     showOrHideStoreItems();
+    addStoreListeners();
 }
 
 /**
@@ -148,7 +208,7 @@ function updateDisplayedQty() {
     for(let item in gameData.playerData.inventory) {
         // don't need to show how many coal you got.
         if(item !== "dirt" && item !== "stone" && item !== "empty" && gameData.playerData.inventory[item] > 0) {
-            let elementHTML = '<div class="cargo-item"><span class="icon"></span><span class="inventory-title">' + item +'</span><span class="inventory-qty">' + gameData.playerData.inventory[item] +'</span></div>'
+            let elementHTML = '<div class="cargo-item"><span class="icon" style="background:' + gameData.blockTypeMap[item].color + '"></span><span class="inventory-title">' + item +'</span><span class="inventory-qty">' + gameData.playerData.inventory[item] +'</span></div>'
             inventoryString += elementHTML;
         }
     }

@@ -24,29 +24,43 @@ function getRandomBlock(y) {
 
 function checkKeyDown(e) {
     e = e || window.event;
-    if(!window.gameData.playerMoving.started) {
-        window.gameData.playerMoving.started = Date.now();
-    }
+
 
 
     if (e.code === 'ArrowUp') {
         // up arrow
         window.gameData.playerMoving.direction = {x:0, y:-1}
+        if(!window.gameData.playerMoving.started) {
+            window.gameData.playerMoving.started = Date.now();
+        }
+        closeAllPopups();
     }
     else if (e.code === 'ArrowDown') {
         // down arrow
         window.gameData.playerMoving.direction = {x:0, y:1}
+        if(!window.gameData.playerMoving.started) {
+            window.gameData.playerMoving.started = Date.now();
+        }
+        closeAllPopups();
     }
     else if (e.code === 'ArrowLeft') {
         // left arrow
         window.gameData.playerMoving.direction = {x:-1, y:0}
+        if(!window.gameData.playerMoving.started) {
+            window.gameData.playerMoving.started = Date.now();
+        }
+        closeAllPopups();
     }
     else if (e.code === 'ArrowRight') {
         // right arrow
         window.gameData.playerMoving.direction = {x:1, y:0}
+        if(!window.gameData.playerMoving.started) {
+            window.gameData.playerMoving.started = Date.now();
+        }
+        closeAllPopups();
     }
 
-    closeAllPopups();
+
 }
 
 function checkKeyUp(e) {

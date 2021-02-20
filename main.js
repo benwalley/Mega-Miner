@@ -271,6 +271,8 @@ function initListeners() {
         closeAllPopups();
         if(gameData.playerData.y < 0) {
             sellStore();
+        } else {
+            informationalMessage("You can not sell unless you are at the surface", 3000);
         }
     })
 
@@ -311,7 +313,6 @@ function init(fromButton = false) {
 
 
     updateDisplayedQty();
-    addStoreListeners();
     handleRestartSave();
     cargoMeter();
     window.requestAnimationFrame(initGameLoop);
